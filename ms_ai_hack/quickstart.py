@@ -24,7 +24,6 @@ openai.api_version = '2023-05-15'
 def main() -> None:
     """ Send a completion call to generate an answer """
     print('Sending a test completion job')
-    start_phrase = 'Write a tagline for an ice cream shop.'
     start = time.time()
     response = openai.ChatCompletion.create(
         engine=DEPLOYMENT_NAME,
@@ -39,8 +38,7 @@ def main() -> None:
     elapsed = time.time() - start
     text = response['choices'][0]['message']['content'].replace('\n', '').replace(' .', '.').strip()
     print(
-        f"In: {start_phrase}\n\n"
-        f"Out: {text}\n\n"
+        f"ChatBot: {text}\n\n"
         f"Elapsed: {elapsed:.2f}s\n\n"
         f"Tokens used: {response['usage']['total_tokens']}\n\n"
         f"Response: {response}\n\n"
