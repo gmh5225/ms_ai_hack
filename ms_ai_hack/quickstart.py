@@ -2,6 +2,7 @@
 """ Azure OpenAI quickstart test """
 
 import os
+import time
 
 import openai
 
@@ -23,10 +24,27 @@ openai.api_version = '2023-05-15'
 def main() -> None:
     """ Send a completion call to generate an answer """
     print('Sending a test completion job')
-    start_phrase = 'Write a tagline for an ice cream shop. '
-    response = openai.Completion.create(engine=DEPLOYMENT_NAME, prompt=start_phrase, max_tokens=10)
-    text = response['choices'][0]['text'].replace('\n', '').replace(' .', '.').strip()
-    print(start_phrase+text)
+    start_phrase = 'Write a tagline for an ice cream shop.'
+    start = time.time()
+    response = openai.ChatCompletion.create(
+        engine=DEPLOYMENT_NAME,
+        max_tokens=50,
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": "Write a tagline for an ice cream shop."},
+            {"role": "assistant", "content": "\"Scoops of happiness in every cone!\""},
+            {"role": "user", "content": "What is the name of the shop?"},
+        ],
+    )
+    elapsed = time.time() - start
+    text = response['choices'][0]['message']['content'].replace('\n', '').replace(' .', '.').strip()
+    print(
+        f"In: {start_phrase}\n\n"
+        f"Out: {text}\n\n"
+        f"Elapsed: {elapsed:.2f}s\n\n"
+        f"Tokens used: {response['usage']['total_tokens']}\n\n"
+        f"Response: {response}\n\n"
+    )
 
 
 if __name__ == '__main__':
